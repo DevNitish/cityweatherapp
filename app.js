@@ -12,10 +12,8 @@ app.use(function(req, res, next) {
   if (mongoose.connection.readyState != 1) {
     mongoose.connect(config.mongoconnectionstring, function(error) {
       if (error) {
-        console.log("error while connecting to mongo");
         throw error;
       } // Handle failed connection
-      console.log('conn ready:  ' + mongoose.connection.readyState);
       next();
     });
   } else {
@@ -41,9 +39,11 @@ router.post('/getweather',function(req,res,next){
 
 		request(options, function (error, response, body) {
 		  if (error){ 
+            res.status(400)
 		  	res.send(error);
 		  	throw new Error(error);
 		  }else{
+            res.status(200)
               res.send(body);
           }
 		 

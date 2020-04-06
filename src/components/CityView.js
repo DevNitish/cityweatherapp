@@ -47,7 +47,7 @@ const CityView= function (props) {
     <div className={classes.root}>
       {
         props.cityArr.map(obj=>
-          <ExpansionPanel expanded={expanded === obj.id} onChange={handleChange(obj.id)}>
+          <ExpansionPanel expanded={expanded === obj._id} onChange={handleChange(obj._id)}>
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1bh-content"

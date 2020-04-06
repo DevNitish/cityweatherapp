@@ -27,7 +27,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ShowData = function(props) {
-  console.log("show data", props);
   if (props.data && props.data.cod == 200) {
     return <Report data={props.data} />;
   } else if (props.data && props.data.err)
@@ -49,24 +48,21 @@ function AppSelector(props) {
     setInfo(null);
     // let fetchURL = "https://api.openweathermap.org/data/2.5/forecast";
     let fetchURL = "/getweather";
-    console.log(" query ", query);
     axios
-      .get(fetchURL, {
-        params: {
-          q: query,
-          APPID: "fc58ba73fc193a3d2fdf7f1e0f35d074",
-          units: "metric"
-        }
+      .post(fetchURL, {
+          q: query        
       })
       .then(res => {
-        console.log("fetch data: ", res.data);
         setLoading(false);
-        setInfo(res.data);
+        if(res.data.cod==200)
+          setInfo(res.data);
+        else
+          setInfo({ err: "Something went wrong try again!" });
+
       })
       .catch(err => {
         setInfo({ err: "Something went wrong try again!" });
         setLoading(false);
-        console.log("fetch err: ", err);
       });
   };
 
