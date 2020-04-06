@@ -47,7 +47,8 @@ function AppSelector(props) {
     event.preventDefault();
     setLoading(true);
     setInfo(null);
-    let fetchURL = "https://api.openweathermap.org/data/2.5/forecast";
+    // let fetchURL = "https://api.openweathermap.org/data/2.5/forecast";
+    let fetchURL = "/getweather";
     console.log(" query ", query);
     axios
       .get(fetchURL, {

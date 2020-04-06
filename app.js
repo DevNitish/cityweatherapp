@@ -1,19 +1,39 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const cityRoute= require('./server/routes')
 router=express.Router();
-var request = require("request");
-``
+const request = require("request");
+const mongoose = require('mongoose');
+const config = require('./server/config/config'); // getting the mongo server from config file
+
+//Connect to Mongo using mongoose
+app.use(function(req, res, next) {
+  if (mongoose.connection.readyState != 1) {
+    mongoose.connect(config.mongoconnectionstring, function(error) {
+      if (error) {
+        console.log("error while connecting to mongo");
+        throw error;
+      } // Handle failed connection
+      console.log('conn ready:  ' + mongoose.connection.readyState);
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
 app.use(express.static('build'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+//connect to db
 
 router.post('/getweather',function(req,res,next){
-	console.log('req.body.city==>',req.body.city);
+	console.log('req.body.city==>',req.body.q);
 		var options = { method: 'GET',
 		  url: 'http://api.openweathermap.org/data/2.5/forecast',
 		  qs: 
-		   { q: req.body.city,
+		   { q: req.body.q,
 		     units: 'metric',
 		     APPID: 'fc58ba73fc193a3d2fdf7f1e0f35d074'
 				 }		  
@@ -23,11 +43,13 @@ router.post('/getweather',function(req,res,next){
 		  if (error){ 
 		  	res.send(error);
 		  	throw new Error(error);
-		  }
-			res.send(body);
+		  }else{
+              res.send(body);
+          }
 		 
 		});
    
 });
 app.use('/',router);
+app.use('/city',cityRoute);
 module.exports = app;
